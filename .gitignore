@@ -1,0 +1,16 @@
+# 依赖与构建产物
+node_modules/
+dist/
+build/
+
+# 编辑器与系统文件
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 本地环境与日志
+.env
+*.log
+npm-debug.log*
