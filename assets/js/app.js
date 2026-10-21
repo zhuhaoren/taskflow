@@ -1,17 +1,20 @@
 /**
- * TaskFlow v0.3
+ * TaskFlow v1.0.0
  * 新增：任务筛选（全部 / 进行中 / 已完成）、完成率统计
+ * 修复：筛选状态持久化，刷新后保持上次选择的视图
  */
 (function () {
   'use strict';
 
   var STORAGE_KEY = 'taskflow.tasks';
+  var FILTER_KEY = 'taskflow.filter';
+  var FILTERS = ['all', 'active', 'done'];
 
   var tasks = load();
   var seq = tasks.reduce(function (max, task) {
     return Math.max(max, task.id);
   }, 0);
-  var currentFilter = 'all';
+  var currentFilter = loadFilter();
 
   var input = document.getElementById('task-input');
   var addBtn = document.getElementById('add-btn');
@@ -39,6 +42,23 @@
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
     } catch (err) {
       console.warn('保存本地任务失败', err);
+    }
+  }
+
+  function loadFilter() {
+    try {
+      var raw = window.localStorage.getItem(FILTER_KEY);
+      return FILTERS.indexOf(raw) > -1 ? raw : 'all';
+    } catch (err) {
+      return 'all';
+    }
+  }
+
+  function saveFilter() {
+    try {
+      window.localStorage.setItem(FILTER_KEY, currentFilter);
+    } catch (err) {
+      console.warn('保存筛选状态失败', err);
     }
   }
 
@@ -133,11 +153,16 @@
     render();
   }
 
-  function setFilter(next) {
-    currentFilter = next;
+  function syncFilterTabs() {
     Array.prototype.forEach.call(filters.querySelectorAll('.filters__tab'), function (tab) {
-      tab.classList.toggle('is-active', tab.dataset.filter === next);
+      tab.classList.toggle('is-active', tab.dataset.filter === currentFilter);
     });
+  }
+
+  function setFilter(next) {
+    currentFilter = FILTERS.indexOf(next) > -1 ? next : 'all';
+    saveFilter();
+    syncFilterTabs();
     render();
   }
 
@@ -161,5 +186,6 @@
     }
   });
 
+  syncFilterTabs();
   render();
 })();
