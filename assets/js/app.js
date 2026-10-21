@@ -1,6 +1,6 @@
 /**
- * TaskFlow v0.2
- * 在 v0.1 基础上补充：任务完成状态切换、localStorage 本地持久化
+ * TaskFlow v0.3
+ * 新增：任务筛选（全部 / 进行中 / 已完成）、完成率统计
  */
 (function () {
   'use strict';
@@ -11,11 +11,17 @@
   var seq = tasks.reduce(function (max, task) {
     return Math.max(max, task.id);
   }, 0);
+  var currentFilter = 'all';
 
   var input = document.getElementById('task-input');
   var addBtn = document.getElementById('add-btn');
   var list = document.getElementById('task-list');
   var emptyState = document.getElementById('empty-state');
+  var filters = document.getElementById('filters');
+  var statTotal = document.getElementById('stat-total');
+  var statActive = document.getElementById('stat-active');
+  var statDone = document.getElementById('stat-done');
+  var statRate = document.getElementById('stat-rate');
 
   function load() {
     try {
@@ -36,10 +42,36 @@
     }
   }
 
+  function visibleTasks() {
+    if (currentFilter === 'active') {
+      return tasks.filter(function (task) {
+        return !task.done;
+      });
+    }
+    if (currentFilter === 'done') {
+      return tasks.filter(function (task) {
+        return task.done;
+      });
+    }
+    return tasks;
+  }
+
+  function updateStats() {
+    var done = tasks.filter(function (task) {
+      return task.done;
+    }).length;
+    var total = tasks.length;
+
+    statTotal.textContent = total;
+    statActive.textContent = total - done;
+    statDone.textContent = done;
+    statRate.textContent = total === 0 ? '0%' : Math.round((done / total) * 100) + '%';
+  }
+
   function render() {
     list.innerHTML = '';
 
-    tasks.forEach(function (task) {
+    visibleTasks().forEach(function (task) {
       var li = document.createElement('li');
       li.className = 'task-item' + (task.done ? ' task-item--done' : '');
 
@@ -69,7 +101,8 @@
       list.appendChild(li);
     });
 
-    emptyState.classList.toggle('empty-state--hidden', tasks.length > 0);
+    emptyState.classList.toggle('empty-state--hidden', visibleTasks().length > 0);
+    updateStats();
   }
 
   function addTask(text) {
@@ -100,6 +133,14 @@
     render();
   }
 
+  function setFilter(next) {
+    currentFilter = next;
+    Array.prototype.forEach.call(filters.querySelectorAll('.filters__tab'), function (tab) {
+      tab.classList.toggle('is-active', tab.dataset.filter === next);
+    });
+    render();
+  }
+
   addBtn.addEventListener('click', function () {
     addTask(input.value);
     input.value = '';
@@ -110,6 +151,13 @@
     if (event.key === 'Enter') {
       addTask(input.value);
       input.value = '';
+    }
+  });
+
+  filters.addEventListener('click', function (event) {
+    var tab = event.target.closest('.filters__tab');
+    if (tab) {
+      setFilter(tab.dataset.filter);
     }
   });
 

@@ -25,6 +25,19 @@
       <button id="add-btn" class="composer__btn" type="button">添加</button>
     </section>
 
+    <section class="stats" id="stats">
+      <span class="stats__item">共 <b id="stat-total">0</b> 项</span>
+      <span class="stats__item">进行中 <b id="stat-active">0</b></span>
+      <span class="stats__item">已完成 <b id="stat-done">0</b></span>
+      <span class="stats__rate">完成率 <b id="stat-rate">0%</b></span>
+    </section>
+
+    <nav class="filters" id="filters">
+      <button class="filters__tab is-active" type="button" data-filter="all">全部</button>
+      <button class="filters__tab" type="button" data-filter="active">进行中</button>
+      <button class="filters__tab" type="button" data-filter="done">已完成</button>
+    </nav>
+
     <ul id="task-list" class="task-list"></ul>
     <p id="empty-state" class="empty-state">还没有任务，先添加一条吧</p>
   </main>
