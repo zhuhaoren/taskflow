@@ -90,6 +90,61 @@ body {
   background: var(--primary-dark);
 }
 
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 18px;
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  font-size: 12px;
+  color: #64748b;
+  background: #f8fafc;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.stats b {
+  color: var(--text);
+  font-size: 14px;
+}
+
+.stats__rate {
+  margin-left: auto;
+  color: var(--primary);
+}
+
+.stats__rate b {
+  color: var(--primary);
+}
+
+.filters {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.filters__tab {
+  padding: 6px 14px;
+  font-size: 13px;
+  color: #64748b;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.filters__tab:hover {
+  color: var(--primary);
+}
+
+.filters__tab.is-active {
+  color: var(--primary);
+  background: rgba(47, 111, 237, 0.1);
+  font-weight: 600;
+}
+
 .task-list {
   margin: 0;
   padding: 0;
